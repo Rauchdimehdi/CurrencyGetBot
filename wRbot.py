@@ -1,3 +1,7 @@
+###########################################
+## with pop up window#####################
+############################################
+
 from selenium import webdriver
 from time import sleep
 import random
@@ -23,5 +27,6 @@ class WorldRBot():
             self.driver.refresh()
             sleep(5) #wait for the page to refresh
             
-    
+bot = WorldRBot()
+bot.login()
     
