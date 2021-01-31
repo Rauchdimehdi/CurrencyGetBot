@@ -1,6 +1,11 @@
 ###########################################
 ## Selenium Headless #####################
 ############################################
+# Few things to add
+#     + add sensitivity (if value > s: send mail )
+#     + lambda to store data in a dynamoDb DB 
+#     + website display chart 
+
 
 from selenium import webdriver
 from time import sleep
@@ -49,6 +54,9 @@ class WorldRBot():
             print(f'{key} : {value}')
 
 WorldRBot()
+
+
+
 
 
 
