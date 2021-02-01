@@ -15,7 +15,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 
-ele={}
+ele={} # ele is a dict  {1: ' 10.75054 MAD'}
+ExchangeHope = 11
 
 class WorldRBot():
     def __init__(self):
@@ -39,19 +40,23 @@ class WorldRBot():
 
         self.driver.get('https://www.worldremit.com/en/morocco?transfer=bnk')
         sleep(5)
-        for i in range(12):
+        while True:
             value = self.driver.find_element_by_xpath('//*[@id="country-service-info"]/div/div/div[2]/div/div[2]/div[2]/table/tbody/tr[3]/td[2]/span').text
             # self.driver.get_screenshot_as_file('worldremit.png')
             Dirham = value.split("=")
             ele.update({i+1 : Dirham[1]})  # add current data
-            print(value)
+            # print(value) | 1 EUR = 10.75054 MAD
             sleep(3) #wait till next retrieve
             self.driver.refresh()
-            sleep(5) #wait for the page to refresh
-            print(ele)
+            sleep(3600) #wait for the next $ retrive 
+            
+            sensitivity = 0.01
+            if abs(Dirham - ExchangeHope) > sensitivity:
+                #send me an email
+                print("email sent")
 
-        for key, value in ele.items():
-            print(f'{key} : {value}')
+
+        
 
 WorldRBot()
 
