@@ -10,13 +10,15 @@
 from selenium import webdriver
 from time import sleep
 import random
+import smtplib
 
 from webdriver_manager.chrome import ChromeDriverManager
 
 
 
 ele={} # ele is a dict  {1: ' 10.75054 MAD'}
-ExchangeHope = 11
+ExchangeHope = 11.0
+sensitivity = 0.3
 
 class WorldRBot():
     def __init__(self):
@@ -36,27 +38,37 @@ class WorldRBot():
         self.options.add_argument('--disable-gpu')
         self.options.add_argument('--disable-dev-shm-usage')
         self.options.add_argument('--no-sandbox')
-        self.driver = webdriver.Chrome(executable_path="chromedriver", options=self.options)
 
+        self.currencyCheck()
+
+    def currencyCheck(self):
+        self.driver = webdriver.Chrome(executable_path="chromedriver", options=self.options)
         self.driver.get('https://www.worldremit.com/en/morocco?transfer=bnk')
         sleep(5)
-        while True:
-            value = self.driver.find_element_by_xpath('//*[@id="country-service-info"]/div/div/div[2]/div/div[2]/div[2]/table/tbody/tr[3]/td[2]/span').text
-            # self.driver.get_screenshot_as_file('worldremit.png')
-            Dirham = value.split("=")
-            ele.update({i+1 : Dirham[1]})  # add current data
-            # print(value) | 1 EUR = 10.75054 MAD
-            sleep(3) #wait till next retrieve
-            self.driver.refresh()
-            sleep(3600) #wait for the next $ retrive 
-            
-            sensitivity = 0.01
-            if abs(Dirham - ExchangeHope) > sensitivity:
-                #send me an email
-                print("email sent")
-
 
         
+        i = 0
+        while True:
+            value = self.driver.find_element_by_xpath('//*[@id="country-service-info"]/div/div/div[2]/div/div[2]/div[2]/table/tbody/tr[3]/td[2]/span').text
+
+            Dirham = value.split("=")
+            Dirham_value = float(Dirham[1].split(' ')[1])
+            ele.update({i+1 : Dirham[1]})  # add current data
+            i = i + 1
+            print(ele) # print(value) | 1 EUR = 10.75054 MAD
+
+            sleep(6) #wait till next retrieve
+            self.driver.refresh()
+            sleep(3) #wait for the next $retrive 
+
+            ratio = ExchangeHope - Dirham_value # r<=0: what I want r>0 : Naah
+            print(f'Dirham value :{Dirham_value} \nthe ExchangeHoped by me :{ExchangeHope}\nRatio : {ratio}')
+            if ratio <= 0:
+                #send me an email
+                print(f"[ URGENT ] Dirham is on it's peak {Dirham_value}")
+            elif ratio < sensitivity:
+                print(f'[ Good News ] You could take a look on the dirham value {Dirham_value}')
+
 
 WorldRBot()
 
