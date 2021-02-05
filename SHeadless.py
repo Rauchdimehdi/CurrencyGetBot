@@ -1,3 +1,4 @@
+#!/Users/rauchdimehdi/Documents/Coding/WorldRemit/env python3
 ###########################################
 ## Selenium Headless #####################
 ############################################
@@ -6,19 +7,16 @@
 #     + lambda to store data in a dynamoDb DB 
 #     + website display chart 
 
-
 from selenium import webdriver
 from time import sleep
 import random
 import smtplib
-
+from sendmail import sendMemail
 from webdriver_manager.chrome import ChromeDriverManager
-
-
 
 ele={} # ele is a dict  {1: ' 10.75054 MAD'}
 ExchangeHope = 11.0
-sensitivity = 0.3
+sensitivity = 0
 
 class WorldRBot():
     def __init__(self):
@@ -55,19 +53,22 @@ class WorldRBot():
             Dirham_value = float(Dirham[1].split(' ')[1])
             ele.update({i+1 : Dirham[1]})  # add current data
             i = i + 1
-            print(ele) # print(value) | 1 EUR = 10.75054 MAD
-
-            sleep(6) #wait till next retrieve
-            self.driver.refresh()
-            sleep(3) #wait for the next $retrive 
+            # print(ele) # print(value) | 1 EUR = 10.75054 MAD
 
             ratio = ExchangeHope - Dirham_value # r<=0: what I want r>0 : Naah
-            print(f'Dirham value :{Dirham_value} \nthe ExchangeHoped by me :{ExchangeHope}\nRatio : {ratio}')
+            # print(f'Dirham value :{Dirham_value} \nthe ExchangeHoped by me :{ExchangeHope}\nRatio : {ratio}')
             if ratio <= 0:
                 #send me an email
-                print(f"[ URGENT ] Dirham is on it's peak {Dirham_value}")
+                subject = f"[ URGENT ] Dirham is on it's peak {Dirham_value}"
+                sendMemail(Dirham_value, subject)
+
             elif ratio < sensitivity:
-                print(f'[ Good News ] You could take a look on the dirham value {Dirham_value}')
+                subject = f'[ Good News ] You could take a look on the dirham value {Dirham_value}'
+                sendMemail(Dirham_value, subject)
+
+            sleep(300) #wait till next retrieve
+            self.driver.refresh()
+            sleep(3) #wait for the next $retrive 
 
 
 WorldRBot()

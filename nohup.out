@@ -1,0 +1,10 @@
+nohup: SHeadless.py: No such file or directory
+nohup: SHeadless.py: No such file or directory
+Traceback (most recent call last):
+  File "SHeadless.py", line 15, in <module>
+    from webdriver_manager.chrome import ChromeDriverManager
+ModuleNotFoundError: No module named 'webdriver_manager'
+Traceback (most recent call last):
+  File "SHeadless.py", line 15, in <module>
+    from webdriver_manager.chrome import ChromeDriverManager
+ModuleNotFoundError: No module named 'webdriver_manager'
