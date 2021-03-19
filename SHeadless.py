@@ -3,7 +3,7 @@
 ## Selenium Headless #####################
 ############################################
 # Few things to add
-#     + add sensitivity (if value > s: send mail )
+#     + get data for every week 
 #     + lambda to store data in a dynamoDb DB 
 #     + website display chart 
 
@@ -16,7 +16,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 ele={} # ele is a dict  {1: ' 10.75054 MAD'}
 ExchangeHope = 11.0
-sensitivity = 0
+sensitivity = 0.2
 
 class WorldRBot():
     def __init__(self):
@@ -40,7 +40,8 @@ class WorldRBot():
         self.currencyCheck()
 
     def currencyCheck(self):
-        self.driver = webdriver.Chrome(executable_path="chromedriver", options=self.options)
+        # self.driver = webdriver.Chrome(executable_path="chromedriver", options=self.options)
+        self.driver = webdriver.Chrome(ChromeDriverManager().install())
         self.driver.get('https://www.worldremit.com/en/morocco?transfer=bnk')
         sleep(5)
 
@@ -53,10 +54,11 @@ class WorldRBot():
             Dirham_value = float(Dirham[1].split(' ')[1])
             ele.update({i+1 : Dirham[1]})  # add current data
             i = i + 1
-            # print(ele) # print(value) | 1 EUR = 10.75054 MAD
-
+            sleep(3)
+            print(ele) # print(value) | 1 EUR = 10.75054 MAD
+            sleep(3)
             ratio = ExchangeHope - Dirham_value # r<=0: what I want r>0 : Naah
-            # print(f'Dirham value :{Dirham_value} \nthe ExchangeHoped by me :{ExchangeHope}\nRatio : {ratio}')
+            print(f'Dirham value :{Dirham_value} \nthe ExchangeHoped by me :{ExchangeHope}\nRatio : {ratio}')
             if ratio <= 0:
                 #send me an email
                 subject = f"[ URGENT ] Dirham is on it's peak {Dirham_value}"
@@ -66,9 +68,9 @@ class WorldRBot():
                 subject = f'[ Good News ] You could take a look on the dirham value {Dirham_value}'
                 sendMemail(Dirham_value, subject)
 
-            sleep(300) #wait till next retrieve
-            self.driver.refresh()
-            sleep(3) #wait for the next $retrive 
+            # sleep(300) #wait till next retrieve
+            # self.driver.refresh()
+            # sleep(3) #wait for the next $retrive 
 
 
 WorldRBot()
