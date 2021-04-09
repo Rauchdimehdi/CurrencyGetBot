@@ -11,8 +11,13 @@ from selenium import webdriver
 from time import sleep
 import random
 import smtplib
+import csv
+import os
+from datetime import datetime
+
 from sendmail import sendMemail
 from webdriver_manager.chrome import ChromeDriverManager
+
 
 ele={} # ele is a dict  {1: ' 10.75054 MAD'}
 ExchangeHope = 11.0
@@ -40,8 +45,8 @@ class WorldRBot():
         self.currencyCheck()
 
     def currencyCheck(self):
-        # self.driver = webdriver.Chrome(executable_path="chromedriver", options=self.options)
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(executable_path="chromedriver", options=self.options)
+        # self.driver = webdriver.Chrome(ChromeDriverManager().install())
         self.driver.get('https://www.worldremit.com/en/morocco?transfer=bnk')
         sleep(5)
 
@@ -72,6 +77,21 @@ class WorldRBot():
             # self.driver.refresh()
             # sleep(3) #wait for the next $retrive 
 
+            # dd/mm/YY H:M:S
+            now = datetime.now()
+            date = now.strftime("%d/%m/%Y")
+            time = now.strftime("%H:%M:%S")
+
+            self.save_csv(Dirham_value, ExchangeHope, date, time)
+    
+    def save_csv(self, Dirham_value, ExchangeHope, date, time):
+        path = os.getcwd()+'/data/data.csv'
+        # path = '/Users/rauchdimehdi/Documents/Coding/WorldRemit/data/data.csv'
+
+        with open(path, 'a+', newline='') as employee_file:
+            employee_writer = csv.writer(employee_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+            employee_writer.writerow([Dirham_value, ExchangeHope, ExchangeHope-Dirham_value, date, time])
 
 WorldRBot()
 
